@@ -1,0 +1,121 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista lokalizacji{% endblock %}
+
+{% block stylesheets %}
+    <style>
+        @media (max-width: 576px) {
+            .locations-table thead {
+                display: none;
+            }
+
+            .locations-table,
+            .locations-table tbody {
+                display: block;
+                width: 100%;
+            }
+
+            .locations-table tr {
+                display: block;
+                margin-bottom: 15px;
+                padding: 10px;
+                border: 1px solid #dee2e6;
+                border-radius: 8px;
+                background: #fff;
+            }
+
+            .locations-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 10px;
+                padding: 7px 4px;
+                border: none;
+                border-bottom: 1px solid #eee;
+                font-size: 14px;
+                overflow-wrap: anywhere;
+            }
+
+            .locations-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                flex-shrink: 0;
+            }
+
+            .locations-table td:last-child {
+                border-bottom: none;
+            }
+
+            .locations-table td.actions {
+                justify-content: flex-end;
+                gap: 8px;
+                padding-top: 12px;
+            }
+
+            .locations-table td.actions::before {
+                content: "Actions";
+                margin-right: auto;
+            }
+
+            .locations-table td.empty-cell {
+                display: block;
+                text-align: center;
+            }
+
+            .locations-table td.empty-cell::before {
+                content: none;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
+        <h1 class="mb-0">Lista lokalizacji</h1>
+
+        <a href="{{ path('app_location_new') }}" class="btn btn-primary">
+            Dodaj lokalizację
+        </a>
+    </div>
+
+    <table class="table table-striped table-hover table-bordered align-middle locations-table">
+        <thead class="table-primary">
+        <tr>
+            <th>Id</th>
+            <th>City</th>
+            <th>Country</th>
+            <th>Latitude</th>
+            <th>Longitude</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for location in locations %}
+            <tr>
+                <td data-label="Id">{{ location.id }}</td>
+                <td data-label="City">{{ location.city }}</td>
+                <td data-label="Country">{{ location.country }}</td>
+                <td data-label="Latitude">{{ location.latitude }}</td>
+                <td data-label="Longitude">{{ location.longitude }}</td>
+
+                <td class="actions">
+                    <a href="{{ path('app_location_show', {'id': location.id}) }}"
+                       class="btn btn-sm btn-outline-primary">
+                        Show
+                    </a>
+
+                    <a href="{{ path('app_location_edit', {'id': location.id}) }}"
+                       class="btn btn-sm btn-outline-secondary">
+                        Edit
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6" class="empty-cell">No records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

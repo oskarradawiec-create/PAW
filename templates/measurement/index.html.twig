@@ -1,0 +1,198 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Lista pomiarów{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    <style>
+        .measurement-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .measurement-header h1 {
+            margin: 0;
+        }
+
+        .measurements-table {
+            width: 100%;
+        }
+
+        @media (max-width: 576px) {
+            .measurement-header {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 15px;
+            }
+
+            .measurement-header h1 {
+                font-size: 1.8rem;
+                line-height: 1.2;
+                overflow-wrap: break-word;
+            }
+
+            .measurement-header a {
+                display: block;
+                width: 100%;
+                text-align: center;
+            }
+
+            .measurements-table,
+            .measurements-table tbody {
+                display: block;
+                width: 100%;
+            }
+
+            .measurements-table thead {
+                display: none;
+            }
+
+            .measurements-table tr {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                margin-bottom: 15px;
+                padding: 10px;
+                border: 1px solid #dee2e6;
+                border-radius: 8px;
+                background: #fff;
+            }
+
+            .measurements-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 10px;
+                width: 100%;
+                box-sizing: border-box;
+                padding: 8px 4px;
+                border: none;
+                border-bottom: 1px solid #eee;
+                font-size: 14px;
+                overflow-wrap: anywhere;
+                word-break: break-word;
+                min-width: 0;
+            }
+
+            .measurements-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                flex-shrink: 0;
+                text-align: left;
+            }
+
+            .measurements-table td:last-child {
+                border-bottom: none;
+            }
+
+            .measurements-table td.actions {
+                justify-content: flex-start;
+                align-items: center;
+                flex-wrap: wrap;
+                gap: 8px;
+                padding-top: 12px;
+            }
+
+            .measurements-table td.actions::before {
+                content: "Actions:";
+                width: 100%;
+            }
+
+            .measurements-table td.empty-cell {
+                display: block;
+                width: 100%;
+                text-align: center;
+                border: none;
+            }
+
+            .measurements-table td.empty-cell::before {
+                content: none;
+            }
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="measurement-header">
+        <h1>Lista pomiarów</h1>
+
+        <a href="{{ path('app_measurement_new') }}" class="btn btn-primary">
+            Dodaj pomiar
+        </a>
+    </div>
+
+    <table class="table table-striped table-hover table-bordered align-middle measurements-table">
+        <thead class="table-primary">
+        <tr>
+            <th>Id</th>
+            <th>Date and time</th>
+            <th>Temperature</th>
+            <th>Humidity</th>
+            <th>Pressure</th>
+            <th>Description</th>
+            <th>Wind speed</th>
+            <th>Location</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+
+        <tbody>
+        {% for measurement in measurements %}
+            <tr>
+                <td data-label="Id">{{ measurement.id }}</td>
+
+                <td data-label="Date">
+                    {{ measurement.dateTime ? measurement.dateTime|date('Y-m-d H:i') : '' }}
+                </td>
+
+                <td data-label="Temperature">
+                    {{ measurement.tempCelcius }} °C
+                </td>
+
+                <td data-label="Humidity">
+                    {{ measurement.humidity }} %
+                </td>
+
+                <td data-label="Pressure">
+                    {{ measurement.pressure }}
+                </td>
+
+                <td data-label="Description">
+                    {{ measurement.description }}
+                </td>
+
+                <td data-label="Wind speed">
+                    {{ measurement.windSpeed }}
+                </td>
+
+                <td data-label="Location">
+                    {{ measurement.location ? measurement.location.city ~ ', ' ~ measurement.location.country : '' }}
+                </td>
+
+                <td class="actions">
+                    <a href="{{ path('app_measurement_show', {'id': measurement.id}) }}"
+                       class="btn btn-sm btn-outline-primary">
+                        Show
+                    </a>
+
+                    <a href="{{ path('app_measurement_edit', {'id': measurement.id}) }}"
+                       class="btn btn-sm btn-outline-secondary">
+                        Edit
+                    </a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9" class="empty-cell">
+                    No records found
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
